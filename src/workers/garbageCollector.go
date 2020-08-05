@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"config"
 	"io/ioutil"
 	"log"
 	"os"
@@ -22,7 +23,7 @@ func (bw *GarbageCollector) start() {
 		for _, file := range fileInfo {
 			i1, err := strconv.Atoi(file.Name())
 			if err == nil {
-				if int64(i1 + 5 * 60) < time.Now().Unix()  {
+				if int64(i1+config.GetConfig().GC.RequestsCollectionTtl) < time.Now().Unix() {
 					err := os.Remove("requests/" + file.Name())
 					if err != nil {
 						log.Panic(err)
@@ -35,6 +36,6 @@ func (bw *GarbageCollector) start() {
 }
 
 func RunGarbageCollector() {
-	gc := GarbageCollector{ baseWorker: BaseWorker{ timeout: 2 } }
+	gc := GarbageCollector{baseWorker: BaseWorker{timeout: config.GetConfig().GC.Timeout}}
 	gc.start()
 }
