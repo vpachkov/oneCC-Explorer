@@ -7,7 +7,10 @@ import (
 )
 
 func _handleTranslate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	header := w.Header()
+	header.Add("Access-Control-Allow-Origin", "*")
+	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	header.Add("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {

@@ -13,7 +13,7 @@ func handleTranslate(request handleTranslateRequest) handleTranslateResponse {
 	response := handleTranslateResponse{}
 	filePath := config.GetConfig().RequestsFolderPath + "/" + strconv.FormatInt(time.Now().Unix(), 10)
 
-	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		response.Error = "Unexpected error in " + Service
 		log.Panic(err)
@@ -23,7 +23,7 @@ func handleTranslate(request handleTranslateRequest) handleTranslateResponse {
 	_, err = f.Write([]byte(request.SourceCode))
 	if err != nil {
 		response.Error = "Unexpected error in " + Service
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	cmd := exec.Command(config.GetConfig().OneCCPath, "-f", filePath, "-p", request.Platform)
@@ -31,7 +31,7 @@ func handleTranslate(request handleTranslateRequest) handleTranslateResponse {
 
 	if err != nil {
 		response.Error = "Unexpected error in " + Service
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	response.TranslatedCode = string(stdout)
