@@ -5,6 +5,9 @@ interface P {
     height?: number,
     width?: number,
     initValue?: string,
+
+    onSignificantUpdate?: () => void,
+    onChange?: (value: string|undefined) => void
 }
 interface S {}
 
@@ -23,7 +26,15 @@ export class SourceEditor extends Component<P, S> {
                     height={ this.props.height }
                     language="JavaScript"
                     onChange={ (ev, value) => {
-                        console.log('changed value', value)
+                        if (this.props.onChange !== undefined) {
+                            this.props.onChange(value)
+                        }
+                        if (this.props.onSignificantUpdate !== undefined) {
+                            const newText = ev['changes'][0]['text']
+                            if (newText.includes(';') || newText.includes('\n')) {
+                                this.props.onSignificantUpdate!()
+                            }
+                        }
                     } }
                     value={ this.props.initValue }
                 />

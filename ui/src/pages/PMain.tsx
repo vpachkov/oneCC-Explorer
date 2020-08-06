@@ -4,6 +4,7 @@ import axios from "axios";
 import { SourceEditor } from '../components/SourceEditor'
 import { defaultSource } from '../consts'
 import { Select } from "semantic-ui-react";
+import { ControlledEditor } from "@monaco-editor/react";
 
 interface P {}
 
@@ -33,7 +34,7 @@ export class PMain extends Component<P, S> {
     }
 
     componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot?: any) {
-        if (this.state.request != prevState.request) {
+        if (this.state.request.platform !== prevState.request.platform) {
             this.translateSourceCode()
         }
     }
@@ -65,11 +66,21 @@ export class PMain extends Component<P, S> {
                         height={ window.innerHeight }
                         width={ window.innerWidth / 2 }
                         initValue={ this.state.request.sourceCode }
+                        onSignificantUpdate={ () => { this.translateSourceCode() } }
+                        onChange={ value => {
+                            this.setState({
+                                ...this.state,
+                                request: {
+                                    ...this.state.request,
+                                    sourceCode: value!,
+                                }
+                            })
+                        } }
                     />
-                    <SourceEditor
+                    <ControlledEditor
                         height={ window.innerHeight }
                         width={ window.innerWidth / 2 }
-                        initValue={ this.state.translatedCode }
+                        value={ this.state.translatedCode }
                     />
                 </div>
             </div>
@@ -80,9 +91,10 @@ export class PMain extends Component<P, S> {
         axios
             .post('http://localhost:8080/api/Translator.translate', JSON.stringify(this.state.request))
             .then((response) => {
+                const translatedCode = response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
                 this.setState({
                     ...this.state,
-                    translatedCode: response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
+                    translatedCode: response.data.error === '' ? translatedCode : response.data.error,
                 })
             }, (error) => {
                 console.log(error);

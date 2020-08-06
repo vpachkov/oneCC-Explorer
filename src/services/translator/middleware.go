@@ -28,11 +28,8 @@ func _handleTranslate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := handleTranslate(request)
-	if response.Error == "" {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+	w.WriteHeader(http.StatusOK)
+
 	resp, err := json.Marshal(response)
 
 	w.Write([]byte(string(resp)))
