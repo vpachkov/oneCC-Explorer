@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { SourceEditor } from '../components/SourceEditor'
 import { defaultSource } from '../consts'
+import { Select } from "semantic-ui-react";
 
 interface P {}
 
@@ -31,10 +32,34 @@ export class PMain extends Component<P, S> {
         this.translateSourceCode()
     }
 
+    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot?: any) {
+        if (this.state.request != prevState.request) {
+            this.translateSourceCode()
+        }
+    }
+
     public render() {
         return (
             <div>
-                <h1>Hello, oneCC-Explorer</h1>
+                <div style={{ display: 'flex' }}>
+                    <h1>Hello, oneCC-Explorer</h1>
+                </div>
+                <Select
+                    placeholder={ this.state.request.platform }
+                    options={ [
+                        { key: 'x86_32', value: 'x86_32', text: 'x86_32' },
+                        { key: 'aarch32', value: 'aarch32', text: 'aarch32' },
+                    ] }
+                    onChange={ (event, data) => {
+                        this.setState({
+                            ...this.state,
+                            request: {
+                                ...this.state.request,
+                                platform: data!.value!.toString(),
+                            }
+                        })
+                    }}
+                />
                 <div style={{ display: 'flex' }}>
                     <SourceEditor
                         height={ window.innerHeight }
@@ -52,7 +77,6 @@ export class PMain extends Component<P, S> {
     }
 
     public translateSourceCode() {
-        console.log(JSON.stringify(this.state.request))
         axios
             .post('http://localhost:8080/api/Translator.translate', JSON.stringify(this.state.request))
             .then((response) => {
