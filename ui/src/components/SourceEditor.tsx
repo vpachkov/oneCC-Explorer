@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { ControlledEditor } from "@monaco-editor/react"
+import { ControlledEditor } from '@monaco-editor/react'
+import { clearInterval } from 'timers'
+
+import { getTime } from '../utils'
 
 interface P {
     height?: number,
@@ -9,14 +12,43 @@ interface P {
     onSignificantUpdate?: () => void,
     onChange?: (value: string|undefined) => void
 }
-interface S {}
+interface S {
+    interval?: NodeJS.Timeout,
+    lastTimeUpdate: number,
+    refreshed: boolean,
+}
 
 export class SourceEditor extends Component<P, S> {
     public static defaultProps = {
         height: window.innerHeight,
         width: window.innerWidth,
         initValue: ''
-    };
+    }
+
+    constructor(props: P) {
+        super(props)
+        this.state = {
+            lastTimeUpdate: 0,
+            refreshed: true,
+        }
+    }
+
+    componentDidMount() {
+        this.setState({ interval: setInterval(() => {
+                if (getTime()  - 1 > this.state.lastTimeUpdate && !this.state.refreshed) {
+                    if (this.props.onSignificantUpdate !== undefined) {
+                        this.props.onSignificantUpdate()
+                    }
+                    this.setState({
+                       refreshed: true,
+                    })
+                }
+        }, 1000) })
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.interval as NodeJS.Timeout)
+    }
 
     public render() {
         return (
@@ -29,12 +61,10 @@ export class SourceEditor extends Component<P, S> {
                         if (this.props.onChange !== undefined) {
                             this.props.onChange(value)
                         }
-                        if (this.props.onSignificantUpdate !== undefined) {
-                            const newText = ev['changes'][0]['text']
-                            if (newText.includes(';') || newText.includes('\n')) {
-                                this.props.onSignificantUpdate!()
-                            }
-                        }
+                        this.setState({
+                            lastTimeUpdate: getTime(),
+                            refreshed: false,
+                        })
                     } }
                     value={ this.props.initValue }
                 />

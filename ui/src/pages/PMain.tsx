@@ -53,7 +53,6 @@ export class PMain extends Component<P, S> {
                     ] }
                     onChange={ (event, data) => {
                         this.setState({
-                            ...this.state,
                             request: {
                                 ...this.state.request,
                                 platform: data!.value!.toString(),
@@ -93,7 +92,6 @@ export class PMain extends Component<P, S> {
             .then((response) => {
                 const translatedCode = response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
                 this.setState({
-                    ...this.state,
                     translatedCode: response.data.error === '' ? translatedCode : response.data.error,
                 })
             }, (error) => {
