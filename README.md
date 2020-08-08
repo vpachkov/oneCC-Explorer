@@ -1,5 +1,10 @@
 Site for exploring oneCC (One C compiler) possibilities
-
+## User Section
+You can easily run this project using Docker, just write:
+```
+docker-compose build && docker-compose up
+``` 
+Or, if you want to build it manually, see the Development section
 ## Development Section
 ### Requirements
 * go
