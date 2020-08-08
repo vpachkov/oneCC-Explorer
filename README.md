@@ -6,12 +6,16 @@ Site for exploring oneCC (One C compiler) possibilities
 * nodejs
 ### Launching Project
 #### Backend
-At first, set GOPATH, so go compiler can deal with packages (**set an absolute path**)
+* Go to the server source folder
+```
+cd server
+```
+* Set GOPATH, so go compiler can deal with packages (**set an absolute path**)
 ```
 pwd
-export GOPATH=.../oneCC-Explorer
+export GOPATH=/some/global/path/server
 ```
-Then, you are ready to run the server
+* Then, you are ready to run the server
 ```
 go run src/main.go
 ```

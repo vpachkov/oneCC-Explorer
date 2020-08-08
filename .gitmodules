@@ -1,3 +1,3 @@
 [submodule "oneCC"]
-	path = oneCC
+	path = server/depends/oneCC
 	url = https://github.com/Plunkerusr/oneCC

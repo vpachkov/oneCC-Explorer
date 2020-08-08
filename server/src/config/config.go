@@ -23,7 +23,7 @@ var once sync.Once
 func GetConfig() *Config {
 	once.Do(func() {
 		instance = &Config{
-			OneCCPath:          os.Getenv("GOPATH") + "/oneCC/oneCC",
+			OneCCPath:          os.Getenv("GOPATH") + "/depends/oneCC/oneCC",
 			RequestsFolderPath: os.Getenv("GOPATH") + "/requests",
 			GC:                 GarbageCollectorConfig{Timeout: time.Duration(2), RequestsCollectionTtl: 2 * 60},
 		}
