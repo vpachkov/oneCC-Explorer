@@ -3,8 +3,8 @@ import axios from "axios";
 
 import { SourceEditor } from '../components/SourceEditor'
 import { defaultSource } from '../consts'
-import { Select } from "semantic-ui-react";
 import { ControlledEditor } from "@monaco-editor/react";
+import { CSelect } from "../components/Select";
 
 interface P {}
 
@@ -41,29 +41,43 @@ export class PMain extends Component<P, S> {
 
     public render() {
         return (
-            <div>
-                <div style={{ display: 'flex' }}>
-                    <h1>Hello, oneCC-Explorer</h1>
+            <div style={{ backgroundColor: '#E5E5E5', height: window.innerHeight }}>
+                <div style={{ marginLeft: '36px' }}>
+                    <div className="labelC enabled l">one</div>
+                    <CSelect
+                        size="l"
+                        options={[
+                            { text: 'C', disabled: false },
+                            { text: 'C++', disabled: true },
+                            { text: 'Swift', disabled: true },
+                            { text: 'Kotlin', disabled: true },
+                        ]}
+                    />
+                    <div className="labelC enabled l">compiler</div>
                 </div>
-                <Select
-                    placeholder={ this.state.request.platform }
-                    options={ [
-                        { key: 'x86_32', value: 'x86_32', text: 'x86_32' },
-                        { key: 'aarch32', value: 'aarch32', text: 'aarch32' },
-                    ] }
-                    onChange={ (event, data) => {
-                        this.setState({
-                            request: {
-                                ...this.state.request,
-                                platform: data!.value!.toString(),
-                            }
-                        })
-                    }}
-                />
-                <div style={{ display: 'flex' }}>
+
+                <div style={{ marginLeft: '36px', marginTop: '36px' }}>
+                    <CSelect
+                        onChange={value => {
+                            this.setState({
+                                request: {
+                                    ...this.state.request,
+                                    platform: value,
+                                }
+                            })
+                        }}
+                        size="s"
+                        options={[
+                            { text: 'x86_32', disabled: false },
+                            { text: 'aarch32', disabled: false },
+                        ]}
+                    />
+                </div>
+
+                <div style={{ display: 'flex', marginLeft: '36px', marginTop: '36px' }}>
                     <SourceEditor
-                        height={ window.innerHeight }
-                        width={ window.innerWidth / 2 }
+                        height={ window.innerHeight * .75 }
+                        width={ (window.innerWidth - 36 * 2 ) / 2 }
                         initValue={ this.state.request.sourceCode }
                         onSignificantUpdate={ () => { this.translateSourceCode() } }
                         onChange={ value => {
@@ -77,8 +91,8 @@ export class PMain extends Component<P, S> {
                         } }
                     />
                     <ControlledEditor
-                        height={ window.innerHeight }
-                        width={ window.innerWidth / 2 }
+                        height={ window.innerHeight * .75 }
+                        width={ (window.innerWidth - 36 * 2 ) / 2}
                         value={ this.state.translatedCode }
                     />
                 </div>
