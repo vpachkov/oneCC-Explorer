@@ -5,6 +5,7 @@ import { SourceEditor } from '../components/SourceEditor'
 import { defaultSource } from '../consts'
 import { Select } from "semantic-ui-react";
 import { ControlledEditor } from "@monaco-editor/react";
+import { NeuButton } from '../components/neuButton';
 
 interface P {}
 
@@ -16,6 +17,7 @@ interface ITranslateRequest {
 interface S {
     request: ITranslateRequest,
     translatedCode: string,
+    isLoading: boolean
 }
 
 export class PMain extends Component<P, S> {
@@ -27,6 +29,7 @@ export class PMain extends Component<P, S> {
                 sourceCode: defaultSource,
             },
             translatedCode: "",
+            isLoading: false,
         }
     }
     componentDidMount() {
@@ -41,10 +44,11 @@ export class PMain extends Component<P, S> {
 
     public render() {
         return (
-            <div>
+            <div style={{backgroundColor: '#eeeeee'}}>
                 <div style={{ display: 'flex' }}>
                     <h1>Hello, oneCC-Explorer</h1>
                 </div>
+                <div style={{ display: 'flex', flexFlow: 'row' }}>
                 <Select
                     placeholder={ this.state.request.platform }
                     options={ [
@@ -60,12 +64,18 @@ export class PMain extends Component<P, S> {
                         })
                     }}
                 />
-                <div style={{ display: 'flex' }}>
+                <NeuButton text={"Compile"} onClick={ () => { this.translateSourceCode() } } ></NeuButton>
+                </div>
+                
+                <div style={{ display: 'flex', backgroundColor: '#eeeeee'}}>
                     <SourceEditor
                         height={ window.innerHeight }
                         width={ window.innerWidth / 2 }
                         initValue={ this.state.request.sourceCode }
-                        onSignificantUpdate={ () => { this.translateSourceCode() } }
+                        onSignificantUpdate={() => {
+                            this.setState({ isLoading: true })
+                            this.translateSourceCode()
+                        }}
                         onChange={ value => {
                             this.setState({
                                 ...this.state,
@@ -76,11 +86,11 @@ export class PMain extends Component<P, S> {
                             })
                         } }
                     />
-                    <ControlledEditor
-                        height={ window.innerHeight }
-                        width={ window.innerWidth / 2 }
-                        value={ this.state.translatedCode }
-                    />
+                    { this.state.isLoading! ? <ControlledEditor
+                                                height={window.innerHeight}
+                                                width={window.innerWidth / 2}
+                                                value={this.state.translatedCode}
+                                                /> : <h1>Loading..</h1> }
                 </div>
             </div>
         )
@@ -93,6 +103,7 @@ export class PMain extends Component<P, S> {
                 const translatedCode = response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
                 this.setState({
                     translatedCode: response.data.error === '' ? translatedCode : response.data.error,
+                    isLoading: false
                 })
             }, (error) => {
                 console.log(error);
