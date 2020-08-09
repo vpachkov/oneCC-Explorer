@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component, ReactNode } from 'react'
 
 export abstract class PBase<P, S> extends Component<P, S> {
     abstract renderHead?(): ReactNode

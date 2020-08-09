@@ -7,17 +7,22 @@ import {
 } from 'react-router-dom'
 
 import { PMain } from './pages/PMain'
+import { PExplore } from './pages/PExplore'
 
 import 'semantic-ui-css/semantic.min.css'
 import './css/App.css'
 import './css/fonts.css'
+import './css/Link.css'
 
 ReactDOM.render(
   <React.StrictMode>
       <Router>
           <Switch>
-              <Route path="/">
+              <Route exact path="/">
                   <PMain/>
+              </Route>
+              <Route exact path="/explore">
+                  <PExplore/>
               </Route>
           </Switch>
       </Router>
