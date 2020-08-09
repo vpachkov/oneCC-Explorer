@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
-import axios from "axios";
+import React from 'react'
+import axios from 'axios'
 
+import { ControlledEditor } from "@monaco-editor/react"
+
+import { PBase } from './PBase'
 import { SourceEditor } from '../components/SourceEditor'
+import { CSelect } from '../components/Select'
 import { defaultSource } from '../consts'
-import { ControlledEditor } from "@monaco-editor/react";
-import { CSelect } from "../components/Select";
 
 interface P {}
 
@@ -18,7 +20,8 @@ interface S {
     translatedCode: string,
 }
 
-export class PMain extends Component<P, S> {
+export class PMain extends PBase<P, S> {
+
     constructor(props: P) {
         super(props)
         this.state = {
@@ -39,24 +42,28 @@ export class PMain extends Component<P, S> {
         }
     }
 
-    public render() {
+    renderHead(): React.ReactNode {
         return (
-            <div style={{ backgroundColor: '#E5E5E5', height: window.innerHeight }}>
-                <div style={{ marginLeft: '36px' }}>
-                    <div className="labelC enabled l">one</div>
-                    <CSelect
-                        size="l"
-                        options={[
-                            { text: 'C', disabled: false },
-                            { text: 'C++', disabled: true },
-                            { text: 'Swift', disabled: true },
-                            { text: 'Kotlin', disabled: true },
-                        ]}
-                    />
-                    <div className="labelC enabled l">compiler</div>
-                </div>
+            <div>
+                <div className="labelC enabled l">one</div>
+                <CSelect
+                    size="l"
+                    options={[
+                        { text: 'C', disabled: false },
+                        { text: 'C++', disabled: true },
+                        { text: 'Swift', disabled: true },
+                        { text: 'Kotlin', disabled: true },
+                    ]}
+                />
+                <div className="labelC enabled l">compiler</div>
+            </div>
+        )
+    }
 
-                <div style={{ marginLeft: '36px', marginTop: '36px' }}>
+    renderContent(): React.ReactNode {
+        return (
+            <div>
+                <div style={{ marginTop: '36px' }}>
                     <CSelect
                         onChange={value => {
                             this.setState({
@@ -74,7 +81,7 @@ export class PMain extends Component<P, S> {
                     />
                 </div>
 
-                <div style={{ display: 'flex', marginLeft: '36px', marginTop: '36px' }}>
+                <div style={{ display: 'flex', marginTop: '36px' }}>
                     <SourceEditor
                         height={ window.innerHeight * .75 }
                         width={ (window.innerWidth - 36 * 2 ) / 2 }
