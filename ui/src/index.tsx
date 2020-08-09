@@ -13,6 +13,7 @@ import 'semantic-ui-css/semantic.min.css'
 import './css/App.css'
 import './css/fonts.css'
 import './css/Link.css'
+import './css/Spinner.css'
 
 ReactDOM.render(
   <React.StrictMode>

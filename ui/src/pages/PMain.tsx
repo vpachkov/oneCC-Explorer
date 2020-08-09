@@ -7,6 +7,7 @@ import { PBase } from './PBase'
 
 import { SourceEditor } from '../components/SourceEditor'
 import { CSelect } from '../components/Select'
+import { Spinner } from '../components/Spinner'
 import { defaultSource } from '../consts'
 
 interface P {}
@@ -19,6 +20,7 @@ interface ITranslateRequest {
 interface S {
     request: ITranslateRequest,
     translatedCode: string,
+    isLoading: boolean,
 }
 
 export class PMain extends PBase<P, S> {
@@ -31,6 +33,7 @@ export class PMain extends PBase<P, S> {
                 sourceCode: defaultSource,
             },
             translatedCode: "",
+            isLoading: true,
         }
     }
     componentDidMount() {
@@ -66,7 +69,7 @@ export class PMain extends PBase<P, S> {
             <div>
                 <div style={{ marginTop: '36px' }}>
                     <CSelect
-                        onChange={value => {
+                        onChange={ value => {
                             this.setState({
                                 request: {
                                     ...this.state.request,
@@ -90,7 +93,6 @@ export class PMain extends PBase<P, S> {
                         onSignificantUpdate={ () => { this.translateSourceCode() } }
                         onChange={ value => {
                             this.setState({
-                                ...this.state,
                                 request: {
                                     ...this.state.request,
                                     sourceCode: value!,
@@ -98,11 +100,22 @@ export class PMain extends PBase<P, S> {
                             })
                         } }
                     />
-                    <ControlledEditor
-                        height={ window.innerHeight * .75 }
-                        width={ (window.innerWidth - 36 * 2 ) / 2}
-                        value={ this.state.translatedCode }
-                    />
+                    <div style={{
+                        minWidth:( window.innerWidth - 36 * 2 ) / 2,
+                        minHeight: window.innerHeight * .75,
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        { this.state.isLoading ?
+                            <Spinner/>
+                            :
+                            <ControlledEditor
+                                height={ window.innerHeight * .75 }
+                                width={ (window.innerWidth - 36 * 2) / 2 }
+                                value={ this.state.translatedCode }
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         )
