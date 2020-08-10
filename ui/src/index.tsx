@@ -11,6 +11,7 @@ import { PExplore } from './pages/PExplore'
 
 import 'semantic-ui-css/semantic.min.css'
 import './css/App.css'
+import './css/Block.css'
 import './css/fonts.css'
 import './css/Link.css'
 import './css/Spinner.css'
