@@ -55,13 +55,18 @@ export class PExplore extends PBase<P, S> {
                         </div>
                     </div>
                 </div>
-                <div style={{ marginTop: '44px' }}>
-                    <div className="labelC disabled xl">VERSION</div>
-                    <div className="block vertical">
-                        <span>Web: {process.env.REACT_APP_GIT_SHA}</span>
-                        <span>oneCC: {process.env.REACT_APP_ONECC_VERSION}</span>
-                    </div>
-                </div>
+                {
+                    process.env.REACT_APP_GIT_SHA !== undefined && process.env.REACT_APP_ONECC_VERSION !== undefined?
+                        <div style={{ marginTop: '44px' }}>
+                            <div className="labelC disabled xl">VERSION</div>
+                            <div className="block vertical">
+                                <span><span className="labelC detailed">Web: </span> <span className="labelC enabled">{ process.env.REACT_APP_GIT_SHA }</span></span>
+                                <span><span className="labelC detailed">oneCC: </span> <span className="labelC enabled">{ process.env.REACT_APP_ONECC_VERSION }</span></span>
+                            </div>
+                        </div>
+                        :
+                        null
+                }
             </div>
         )
     }
