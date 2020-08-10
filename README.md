@@ -37,3 +37,12 @@ npm i
 ```
 npm start
 ```
+* Launch the server with env variables
+```
+REACT_APP_GIT_SHA=`git rev-parse --short HEAD` REACT_APP_ONECC_VERSION=`../server/depends/oneCC/oneCC --version` npm start
+```
+##### Frontend (after installing requirements)
+* Launch the server and setting env variables
+```
+./test-ui.sh
+```
