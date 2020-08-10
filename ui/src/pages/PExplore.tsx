@@ -25,6 +25,7 @@ export class PExplore extends PBase<P, S> {
         )
     }
     renderContent(): React.ReactNode {
+        console.log(process.env.REACT_APP_GIT_SHA);
         return (
             <div>
                 {/*TODO: Not sure if we even need this*/}
@@ -52,6 +53,13 @@ export class PExplore extends PBase<P, S> {
                         <div style={{ marginTop: '16px' }}>
                             <Link text="Arman Djilavan" additionalText="aka armannz" url="https://github.com/armannz"/>
                         </div>
+                    </div>
+                </div>
+                <div style={{ marginTop: '44px' }}>
+                    <div className="labelC disabled xl">VERSION</div>
+                    <div className="block vertical">
+                        <span>Web: {process.env.REACT_APP_GIT_SHA}</span>
+                        <span>oneCC: {process.env.REACT_APP_ONECC_VERSION}</span>
                     </div>
                 </div>
             </div>
