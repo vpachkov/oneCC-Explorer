@@ -10,6 +10,7 @@ import { PMain } from './pages/PMain'
 import { PExplore } from './pages/PExplore'
 
 import 'semantic-ui-css/semantic.min.css'
+import './css/Alert.css'
 import './css/App.css'
 import './css/Block.css'
 import './css/fonts.css'

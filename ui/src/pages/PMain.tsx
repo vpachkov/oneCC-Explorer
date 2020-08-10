@@ -5,10 +5,14 @@ import { ControlledEditor } from "@monaco-editor/react"
 
 import { PBase } from './PBase'
 
+import { Alert } from '../components/Alert'
 import { SourceEditor } from '../components/SourceEditor'
 import { CSelect } from '../components/Select'
 import { Spinner } from '../components/Spinner'
 import { defaultSource } from '../consts'
+
+import { faWifi } from '@fortawesome/free-solid-svg-icons'
+import { faCookieBite } from '@fortawesome/free-solid-svg-icons'
 
 interface P {}
 
@@ -21,6 +25,7 @@ interface S {
     request: ITranslateRequest,
     translatedCode: string,
     isLoading: boolean,
+    isError: boolean,
 }
 
 export class PMain extends PBase<P, S> {
@@ -33,7 +38,8 @@ export class PMain extends PBase<P, S> {
                 sourceCode: defaultSource,
             },
             translatedCode: "",
-            isLoading: true,
+            isLoading: false,
+            isError: false,
         }
     }
     componentDidMount() {
@@ -109,6 +115,23 @@ export class PMain extends PBase<P, S> {
                         { this.state.isLoading ?
                             <Spinner/>
                             :
+                            this.state.isError ?
+                            <Alert
+                                icon={faWifi}
+                                alertTitle={ "Internet" }
+                                alertAccentTitle={ "Error" }
+                                body={[
+                                    {
+                                        text: 'Please check your internet connection. If you are sure that the problem is on your side, let us know as soon as possible. '
+                                    },
+                                ]}
+                                actions={[
+                                    {
+                                        text: 'Try again'
+                                    }
+                                ]}
+                            />
+                            :
                             <ControlledEditor
                                 height={ window.innerHeight * .75 }
                                 width={ (window.innerWidth - 36 * 2) / 2 }
@@ -130,7 +153,22 @@ export class PMain extends PBase<P, S> {
                     translatedCode: response.data.error === '' ? translatedCode : response.data.error,
                 })
             }, (error) => {
-                console.log(error);
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                  } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    
+                  } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                  }
+                this.setState({
+                    isError: true
+                })
             })
     }
 }

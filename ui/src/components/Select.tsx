@@ -5,7 +5,6 @@ export interface ISelectOption{
     disabled: boolean,
 }
 
-
 interface P {
     options: ISelectOption[],
     size: string,
