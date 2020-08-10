@@ -8,6 +8,7 @@ import { PBase } from './PBase'
 import { SourceEditor } from '../components/SourceEditor'
 import { CSelect } from '../components/Select'
 import { Spinner } from '../components/Spinner'
+import { Link } from '../components/Link'
 import { defaultSource } from '../consts'
 
 interface P {}
@@ -33,7 +34,7 @@ export class PMain extends PBase<P, S> {
                 sourceCode: defaultSource,
             },
             translatedCode: "",
-            isLoading: true,
+            isLoading: false,
         }
     }
     componentDidMount() {
@@ -67,7 +68,7 @@ export class PMain extends PBase<P, S> {
     renderContent(): React.ReactNode {
         return (
             <div>
-                <div style={{ marginTop: '36px' }}>
+                <div style={{ marginTop: '36px', display: 'flex', alignItems: 'center' }}>
                     <CSelect
                         onChange={ value => {
                             this.setState({
@@ -83,6 +84,9 @@ export class PMain extends PBase<P, S> {
                             { text: 'aarch32', disabled: false },
                         ]}
                     />
+                    <div style={{ marginLeft: 'auto' }}>
+                        <Link url="/explore" text="Explore"/>
+                    </div>
                 </div>
 
                 <div style={{ display: 'flex', marginTop: '36px' }}>
@@ -122,15 +126,18 @@ export class PMain extends PBase<P, S> {
     }
 
     public translateSourceCode() {
+        this.setState({ isLoading: true })
         axios
             .post('http://localhost:8080/api/Translator.translate', JSON.stringify(this.state.request))
             .then((response) => {
                 const translatedCode = response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
                 this.setState({
                     translatedCode: response.data.error === '' ? translatedCode : response.data.error,
+                    isLoading: false,
                 })
             }, (error) => {
                 console.log(error);
+                this.setState({ isLoading: false })
             })
     }
 }
