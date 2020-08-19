@@ -5,6 +5,7 @@ import { ControlledEditor } from "@monaco-editor/react"
 
 import { PBase } from './PBase'
 
+import { CodeEditor } from '../components/CodeEditor'
 import { SourceEditor } from '../components/SourceEditor'
 import { CSelect } from '../components/Select'
 import { Spinner } from '../components/Spinner'
@@ -89,8 +90,8 @@ export class PMain extends PBase<P, S> {
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', marginTop: '36px' }}>
-                    <SourceEditor
+                <div style={{ display: 'flow', marginTop: '36px' }}>
+                    {/* <SourceEditor
                         height={ window.innerHeight * .75 }
                         width={ (window.innerWidth - 36 * 2 ) / 2 }
                         initValue={ this.state.request.sourceCode }
@@ -103,14 +104,22 @@ export class PMain extends PBase<P, S> {
                                 }
                             })
                         } }
-                    />
+                    /> */}
+                        <CodeEditor onChange={ (value) => {
+                            this.setState({
+                                request: {
+                                    ...this.state.request,
+                                    sourceCode: value!,
+                                }
+                            })
+                        } }/>
                     <div style={{
                         minWidth:( window.innerWidth - 36 * 2 ) / 2,
                         minHeight: window.innerHeight * .75,
                         display: 'flex', alignItems: 'center',
                         justifyContent: 'center'
                     }}>
-                        { this.state.isLoading ?
+                        {/* { this.state.isLoading ?
                             <Spinner/>
                             :
                             <ControlledEditor
@@ -118,7 +127,7 @@ export class PMain extends PBase<P, S> {
                                 width={ (window.innerWidth - 36 * 2) / 2 }
                                 value={ this.state.translatedCode }
                             />
-                        }
+                        } */}
                     </div>
                 </div>
             </div>
