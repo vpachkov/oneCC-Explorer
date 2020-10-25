@@ -5,15 +5,17 @@ import { ControlledEditor } from "@monaco-editor/react"
 
 import { PBase } from './PBase'
 
-import { Alert } from '../components/Alert'
+import { IAlertParagraph, IAlertAction, Alert } from '../components/Alert'
 import { SourceEditor } from '../components/SourceEditor'
 import { CSelect } from '../components/Select'
 import { Spinner } from '../components/Spinner'
 import { Link } from '../components/Link'
 import { defaultSource } from '../consts'
 
+import { faGlassWhiskey, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { faWifi } from '@fortawesome/free-solid-svg-icons'
-import { faCookieBite } from '@fortawesome/free-solid-svg-icons'
+import { faLaptopCode } from '@fortawesome/free-solid-svg-icons'
+import { throws } from 'assert'
 
 interface P {}
 
@@ -26,6 +28,12 @@ interface S {
     request: ITranslateRequest,
     translatedCode: string,
     isLoading: boolean,
+    
+    errorIcon: IconDefinition,
+    errorTitle: string,
+    errorAccentTitle: string,
+    errorBody: IAlertParagraph[],
+    errorActions: IAlertAction[],
     isError: boolean,
 }
 
@@ -40,6 +48,12 @@ export class PMain extends PBase<P, S> {
             },
             translatedCode: "",
             isLoading: false,
+            
+            errorIcon: faWifi,
+            errorTitle: "",
+            errorAccentTitle: "",
+            errorBody: [],
+            errorActions: [],
             isError: false,
         }
     }
@@ -121,19 +135,11 @@ export class PMain extends PBase<P, S> {
                             :
                             this.state.isError ?
                             <Alert
-                                icon={faWifi}
-                                alertTitle={ "Internet" }
-                                alertAccentTitle={ "Error" }
-                                body={[
-                                    {
-                                        text: 'Please check your internet connection. If you are sure that the problem is on your side, let us know as soon as possible. '
-                                    },
-                                ]}
-                                actions={[
-                                    {
-                                        text: 'Try again'
-                                    }
-                                ]}
+                                icon={this.state.errorIcon}
+                                alertTitle={ this.state.errorTitle }
+                                alertAccentTitle={ this.state.errorAccentTitle }
+                                body={this.state.errorBody}
+                                actions={this.state.errorActions}
                             />
                             :
                             <ControlledEditor
@@ -154,8 +160,26 @@ export class PMain extends PBase<P, S> {
             .post('http://localhost:8080/api/Translator.translate', JSON.stringify(this.state.request))
             .then((response) => {
                 const translatedCode = response.data.translatedCode[0] === '\n' ? response.data.translatedCode.slice(1) : response.data.translatedCode
+                if (response.data.error) {
+                    this.setState({
+                        errorIcon: faLaptopCode,
+                        errorTitle: response.data.error,
+                        errorAccentTitle: "Compilation Error",
+                        errorBody: [
+                            {
+                                text: response.data.translatedCode
+                            }
+                        ],
+                        errorActions: [],
+                        isError: true,
+                    })
+                } else {
+                    this.setState({
+                        isError: false
+                    })
+                }
                 this.setState({
-                    translatedCode: response.data.error === '' ? translatedCode : response.data.error,
+                    translatedCode: translatedCode,
                     isLoading: false,
                 })
             }, (error) => {
@@ -173,7 +197,16 @@ export class PMain extends PBase<P, S> {
                     console.log('Error', error.message);
                   }
                 this.setState({
-                    isError: true
+                    errorIcon: faWifi,
+                    errorTitle: "Seems we are offline",
+                    errorAccentTitle: "Connection Error",
+                    errorBody: [
+                        {
+                            text: "Please check your Internet connection. If it's alrigth, it's our mistake and we will fix it."
+                        }
+                    ],
+                    errorActions: [],
+                    isError: true,
                 })
             })
     }
